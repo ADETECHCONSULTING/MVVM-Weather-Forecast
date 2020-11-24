@@ -1,4 +1,4 @@
-package fr.atraore.weather_forecast.data.response
+package fr.atraore.weather_forecast.data.db.entity
 
 
 import com.google.gson.annotations.SerializedName

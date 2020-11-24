@@ -1,7 +1,7 @@
 package fr.atraore.weather_forecast.data
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import fr.atraore.weather_forecast.data.response.CurrentWeatherResponse
+import fr.atraore.weather_forecast.data.network.response.CurrentWeatherResponse
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
