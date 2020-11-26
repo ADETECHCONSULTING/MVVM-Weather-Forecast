@@ -2,20 +2,13 @@ package fr.atraore.weather_forecast.ui.weather.current
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import fr.atraore.weather_forecast.R
-import fr.atraore.weather_forecast.data.ApixuWeatherApiService
-import fr.atraore.weather_forecast.data.network.ConnectivityInterceptorImpl
-import fr.atraore.weather_forecast.data.network.WeatherNetworkDataSource
-import fr.atraore.weather_forecast.data.network.WeatherNetworkDataSourceImpl
 import fr.atraore.weather_forecast.ui.base.ScopedFragment
 import kotlinx.android.synthetic.main.current_weather_fragment.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -49,8 +42,42 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
     val currentWeather = viewModel.weather.await()
     currentWeather.observe(viewLifecycleOwner, Observer {
       if (it == null) return@Observer
-      textViewCity.text = it.toString()
+
+      group_loading.visibility = View.GONE
+      updateCity("Paris", "France")
+      updateTemperature(it.temperature, it.feelsLike)
+      updatePrecipitation(it.precip)
+      updateWind(it.windDir, it.windSpeed)
+      updatePressure(it.pressure)
+      updateCondition("")
+      updateVisibility(it.visibility)
     })
   }
 
+  private fun updateCity(city: String, country: String) {
+    textview_city.text = "$city, $country"
+  }
+  private fun updateTemperature(temperature: Int, feelsLike: Int) {
+    textview_temperature.text = "$temperature°C"
+  }
+
+  private fun updateCondition(condition: String) {
+    imageview_condition_icon.setImageResource(R.drawable.ic_cloudy_white)
+  }
+
+  private fun updatePrecipitation(precipitationVolume: Int) {
+    textview_precipitation.text = "Précipitation: $precipitationVolume mm"
+  }
+
+  private fun updateWind(windDirection: String, windSpeed: Int) {
+    textview_wind.text = "Vent: $windDirection, $windSpeed kph"
+  }
+
+  private fun updatePressure(pressure: Int) {
+    textview_pressure.text = "Pression: $pressure hPa"
+  }
+
+  private fun updateVisibility(visibilityDistance: Int) {
+    textview_visibility.text = "Visibilité: $visibilityDistance km"
+  }
 }

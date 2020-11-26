@@ -2,6 +2,7 @@ package fr.atraore.weather_forecast.data.db.entity
 
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 

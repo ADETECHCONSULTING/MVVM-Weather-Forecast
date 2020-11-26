@@ -1,14 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".ui.weather.current.CurrentWeatherFragment">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:background="@drawable/gradient">
+
+  <androidx.constraintlayout.widget.Group
+    android:id="@+id/group_loading"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:constraint_referenced_ids="textview_loading, progressbar_loading"/>
+
+  <ProgressBar
+    android:id="@+id/progressbar_loading"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"/>
 
   <TextView
-    android:id="@+id/textViewCity"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:text="Current" />
+    android:id="@+id/textview_loading"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/progressbar_loading"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:layout_marginBottom="8dp"
+    android:text="@string/chargement_text"
+    android:textColor="@android:color/white"
+    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"/>
 
-</FrameLayout>
+
+  <androidx.constraintlayout.widget.Guideline
+    android:id="@+id/guideline"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    app:layout_constraintGuide_percent="0.2" />
+
+  <TextView
+    android:id="@+id/textview_city"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textColor="@android:color/white"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toBottomOf="@id/guideline"
+    tools:text="Paris, France"
+    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+    />
+
+  <ImageView
+    android:id="@+id/imageview_condition_icon"
+    android:layout_width="135dp"
+    android:layout_height="135dp"
+    app:layout_constraintDimensionRatio="1:1"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/guideline"
+    android:contentDescription="@string/weather_condition_icon_descr"
+    tools:src="@drawable/ic_sun_white"/>
+
+  <TextView
+    android:id="@+id/textview_temperature"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/imageview_condition_icon"
+    tools:text="30°C"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:layout_margin="8dp"
+    android:textColor="@android:color/white"
+    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"/>
+
+  <TextView
+    android:id="@+id/textview_visibility"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/textview_temperature"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    tools:text="Humidity: 62%"
+    android:textColor="@android:color/white"
+    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+
+  <TextView
+    android:id="@+id/textview_pressure"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/textview_visibility"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    tools:text="Pressure: 1001 hPa"
+    android:textColor="@android:color/white"
+    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+
+  <TextView
+    android:id="@+id/textview_wind"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/textview_pressure"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    tools:text="Wind: 25 kmh"
+    android:textColor="@android:color/white"
+    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+
+  <TextView
+    android:id="@+id/textview_precipitation"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/textview_wind"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    tools:text="précipitation: 25 mm"
+    android:textColor="@android:color/white"
+    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+
+  <TextView
+    android:id="@+id/textview_today"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:layout_marginBottom="8dp"
+    tools:text="13 Juillet 2002"
+    android:textColor="@android:color/white"
+    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
