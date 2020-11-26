@@ -1,7 +1,13 @@
 package fr.atraore.weather_forecast.ui.weather.current
 
 import androidx.lifecycle.ViewModel
+import fr.atraore.weather_forecast.data.internals.lazyDeferred
+import fr.atraore.weather_forecast.data.repository.ForecastRepository
 
-class CurrentWeatherViewModel : ViewModel() {
-  // TODO: Implement the ViewModel
+class CurrentWeatherViewModel(
+  private val forecastRepository: ForecastRepository
+) : ViewModel() {
+  val weather by lazyDeferred {
+    forecastRepository.getCurrentWeather()
+  }
 }

@@ -12,39 +12,45 @@ import fr.atraore.weather_forecast.data.ApixuWeatherApiService
 import fr.atraore.weather_forecast.data.network.ConnectivityInterceptorImpl
 import fr.atraore.weather_forecast.data.network.WeatherNetworkDataSource
 import fr.atraore.weather_forecast.data.network.WeatherNetworkDataSourceImpl
+import fr.atraore.weather_forecast.ui.base.ScopedFragment
 import kotlinx.android.synthetic.main.current_weather_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 
-class CurrentWeatherFragment : Fragment() {
+class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
+  override val kodein by closestKodein()
+  private val viewModelFactory by instance<CurrentWeatherViewModelFactory>()
 
-    companion object {
-        fun newInstance() =
-          CurrentWeatherFragment()
-    }
+  companion object {
+    fun newInstance() =
+      CurrentWeatherFragment()
+  }
 
-    private lateinit var viewModel: CurrentWeatherViewModel
+  private lateinit var viewModel: CurrentWeatherViewModel
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.current_weather_fragment, container, false)
-    }
+  override fun onCreateView(
+    inflater: LayoutInflater, container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    return inflater.inflate(R.layout.current_weather_fragment, container, false)
+  }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CurrentWeatherViewModel::class.java)
-        val apiService = ApixuWeatherApiService(ConnectivityInterceptorImpl(this.requireContext()))
-        val weatherNetworkDataSource = WeatherNetworkDataSourceImpl(apiService)
+  override fun onActivityCreated(savedInstanceState: Bundle?) {
+    super.onActivityCreated(savedInstanceState)
+    viewModel = ViewModelProvider(this, viewModelFactory).get(CurrentWeatherViewModel::class.java)
+    bindUI()
+  }
 
-        weatherNetworkDataSource.downloadedCurrentWeather.observe(viewLifecycleOwner, Observer {
-          textViewCity.text = it.toString()
-        })
-        GlobalScope.launch(Dispatchers.Main) {
-          weatherNetworkDataSource.fetchCurrentWeather("Paris")
-        }
-    }
+  private fun bindUI() = launch {
+    val currentWeather = viewModel.weather.await()
+    currentWeather.observe(viewLifecycleOwner, Observer {
+      if (it == null) return@Observer
+      textViewCity.text = it.toString()
+    })
+  }
 
 }
