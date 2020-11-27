@@ -22,11 +22,12 @@ class MainActivity : AppCompatActivity() {
 //      w.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 //      w.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
 //    }
+    requestWindowFeature(Window.FEATURE_NO_TITLE);
+    this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
     navController = Navigation.findNavController(this, R.id.nav_host_fragment)
-    bottom_nav.setupWithNavController(navController)
 
   }
 

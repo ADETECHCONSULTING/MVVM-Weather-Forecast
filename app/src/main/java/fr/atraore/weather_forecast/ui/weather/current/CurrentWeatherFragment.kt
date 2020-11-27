@@ -14,6 +14,10 @@ import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
+import java.util.*
 
 class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
   override val kodein by closestKodein()
@@ -52,12 +56,22 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
       updatePressure(it.pressure)
       updateCondition(it.weatherCode)
       updateVisibility(it.visibility)
+      updateDate()
     })
   }
 
   private fun updateCity(city: String, country: String) {
     textview_city.text = "$city, $country"
   }
+
+  private fun updateDate() {
+    val dateTimeFormatter = DateTimeFormatter
+      .ofLocalizedDateTime(FormatStyle.SHORT)
+      .withLocale(Locale.FRANCE)
+
+    textview_today.text = ZonedDateTime.now().format(dateTimeFormatter)
+  }
+
   private fun updateTemperature(temperature: Int, feelsLike: Int) {
     textview_temperature.text = "$temperature°C"
   }
@@ -65,14 +79,11 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
   private fun updateCondition(weatherCode: Int) {
     if (WeatherCodes.cloudyCodes.contains(weatherCode)) {
       imageview_condition_icon.setImageResource(R.drawable.ic_cloudy_white)
-    }
-    else if (WeatherCodes.rainCodes.contains(weatherCode)) {
+    } else if (WeatherCodes.rainCodes.contains(weatherCode)) {
       imageview_condition_icon.setImageResource(R.drawable.ic_rain_white)
-    }
-    else if (WeatherCodes.snowCodes.contains(weatherCode)) {
+    } else if (WeatherCodes.snowCodes.contains(weatherCode)) {
       imageview_condition_icon.setImageResource(R.drawable.ic_snowflake_white)
-    }
-    else if (WeatherCodes.sunnyCodes.contains(weatherCode)) {
+    } else if (WeatherCodes.sunnyCodes.contains(weatherCode)) {
       imageview_condition_icon.setImageResource(R.drawable.ic_sun_white)
     } else {
       imageview_condition_icon.setImageResource(R.drawable.ic_cloudy_white)
