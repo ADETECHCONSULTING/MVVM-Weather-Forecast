@@ -1,12 +1,12 @@
 package fr.atraore.weather_forecast.data.db.entity
 
 
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.google.gson.annotations.SerializedName
+import fr.atraore.weather_forecast.data.internals.WeatherTypeConverters
 
 const val CURRENT_WEATHER_ID = 0
+
 
 @Entity(tableName = "current_weather")
 data class CurrentWeatherEntry(
@@ -20,6 +20,8 @@ data class CurrentWeatherEntry(
     val feelsLike: Int,
     val temperature: Int,
     val visibility: Int,
+    @SerializedName("weather_code")
+    val weatherCode: Int,
     @SerializedName("wind_dir")
     val windDir: String,
     @SerializedName("wind_speed")
@@ -27,4 +29,5 @@ data class CurrentWeatherEntry(
 ) {
   @PrimaryKey(autoGenerate = false)
   var id: Int = CURRENT_WEATHER_ID
+
 }

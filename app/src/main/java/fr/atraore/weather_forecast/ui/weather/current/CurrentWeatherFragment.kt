@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import fr.atraore.weather_forecast.R
+import fr.atraore.weather_forecast.data.internals.WeatherCodes
 import fr.atraore.weather_forecast.ui.base.ScopedFragment
 import kotlinx.android.synthetic.main.current_weather_fragment.*
 import kotlinx.coroutines.launch
@@ -49,7 +50,7 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
       updatePrecipitation(it.precip)
       updateWind(it.windDir, it.windSpeed)
       updatePressure(it.pressure)
-      updateCondition("")
+      updateCondition(it.weatherCode)
       updateVisibility(it.visibility)
     })
   }
@@ -61,8 +62,21 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
     textview_temperature.text = "$temperature°C"
   }
 
-  private fun updateCondition(condition: String) {
-    imageview_condition_icon.setImageResource(R.drawable.ic_cloudy_white)
+  private fun updateCondition(weatherCode: Int) {
+    if (WeatherCodes.cloudyCodes.contains(weatherCode)) {
+      imageview_condition_icon.setImageResource(R.drawable.ic_cloudy_white)
+    }
+    else if (WeatherCodes.rainCodes.contains(weatherCode)) {
+      imageview_condition_icon.setImageResource(R.drawable.ic_rain_white)
+    }
+    else if (WeatherCodes.snowCodes.contains(weatherCode)) {
+      imageview_condition_icon.setImageResource(R.drawable.ic_snowflake_white)
+    }
+    else if (WeatherCodes.sunnyCodes.contains(weatherCode)) {
+      imageview_condition_icon.setImageResource(R.drawable.ic_sun_white)
+    } else {
+      imageview_condition_icon.setImageResource(R.drawable.ic_cloudy_white)
+    }
   }
 
   private fun updatePrecipitation(precipitationVolume: Int) {
