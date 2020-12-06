@@ -1,13 +1,18 @@
 package fr.atraore.weather_forecast.ui.weather.current
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.preference.PreferenceManager
 import fr.atraore.weather_forecast.R
 import fr.atraore.weather_forecast.data.internals.WeatherCodes
+import fr.atraore.weather_forecast.data.provider.CUSTOM_LOCATION
+import fr.atraore.weather_forecast.data.provider.PreferenceProvider
 import fr.atraore.weather_forecast.ui.base.ScopedFragment
 import kotlinx.android.synthetic.main.current_weather_fragment.*
 import kotlinx.coroutines.launch
@@ -22,6 +27,7 @@ import java.util.*
 class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
   override val kodein by closestKodein()
   private val viewModelFactory by instance<CurrentWeatherViewModelFactory>()
+  private var isOnEditMode: Boolean = false
 
   companion object {
     fun newInstance() =
@@ -41,15 +47,38 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
     super.onActivityCreated(savedInstanceState)
     viewModel = ViewModelProvider(this, viewModelFactory).get(CurrentWeatherViewModel::class.java)
     bindUI()
+    bindUIEvents()
+  }
+
+  private fun bindUIEvents() {
+    btn_edit.setOnClickListener {
+      if (isOnEditMode) {
+        if (edit_city.text.isNotEmpty()) {
+          val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+          with(sharedPref.edit()) {
+            putString(CUSTOM_LOCATION, edit_city.text.toString())
+            apply()
+          }
+        }
+      }
+      isOnEditMode = !isOnEditMode
+      updateCityVisibility()
+    }
   }
 
   private fun bindUI() = launch {
     val currentWeather = viewModel.weather.await()
+    val weatherLocation = viewModel.weatherLocation.await()
+
+    weatherLocation.observe(viewLifecycleOwner, Observer {location ->
+      if (location == null) return@Observer
+      updateCity(location.name, location.country)
+    })
+
     currentWeather.observe(viewLifecycleOwner, Observer {
       if (it == null) return@Observer
 
       group_loading.visibility = View.GONE
-      updateCity("Paris", "France")
       updateTemperature(it.temperature, it.feelsLike)
       updatePrecipitation(it.precip)
       updateWind(it.windDir, it.windSpeed)
@@ -61,7 +90,17 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
   }
 
   private fun updateCity(city: String, country: String) {
-    textview_city.text = "$city, $country"
+      textview_city.text = "$city, $country"
+  }
+
+  private fun updateCityVisibility() {
+    if (isOnEditMode) {
+      textview_city.visibility = View.GONE
+      edit_city.visibility = View.VISIBLE
+    } else {
+      textview_city.visibility = View.VISIBLE
+      edit_city.visibility = View.GONE
+    }
   }
 
   private fun updateDate() {

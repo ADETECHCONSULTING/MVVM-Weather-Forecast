@@ -5,10 +5,13 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import fr.atraore.weather_forecast.data.ApixuWeatherApiService
 import fr.atraore.weather_forecast.data.db.CurrentWeatherDao
 import fr.atraore.weather_forecast.data.db.ForecastDatabase
+import fr.atraore.weather_forecast.data.db.WeatherLocationDao
 import fr.atraore.weather_forecast.data.network.ConnectivityInterceptor
 import fr.atraore.weather_forecast.data.network.ConnectivityInterceptorImpl
 import fr.atraore.weather_forecast.data.network.WeatherNetworkDataSource
 import fr.atraore.weather_forecast.data.network.WeatherNetworkDataSourceImpl
+import fr.atraore.weather_forecast.data.provider.LocationProvider
+import fr.atraore.weather_forecast.data.provider.LocationProviderImpl
 import fr.atraore.weather_forecast.data.repository.ForecastRepository
 import fr.atraore.weather_forecast.data.repository.ForecastRepositoryImpl
 import fr.atraore.weather_forecast.ui.weather.current.CurrentWeatherViewModelFactory
@@ -27,10 +30,12 @@ class ForecastApplication : Application(), KodeinAware {
 
     bind<ForecastDatabase>() with singleton { ForecastDatabase(instance()) }
     bind<CurrentWeatherDao>() with singleton { instance<ForecastDatabase>().currentWeatherDao() }
+    bind<WeatherLocationDao>() with singleton { instance<ForecastDatabase>().weatherLocationDao() }
     bind<ConnectivityInterceptor>() with singleton { ConnectivityInterceptorImpl(instance()) } //interface
     bind<ApixuWeatherApiService>() with singleton { ApixuWeatherApiService(instance()) }
     bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance()) } //interface
-    bind<ForecastRepository>() with singleton { ForecastRepositoryImpl(instance(), instance()) } //interface
+    bind<LocationProvider>() with singleton { LocationProviderImpl(instance()) }
+    bind<ForecastRepository>() with singleton { ForecastRepositoryImpl(instance(), instance(), instance(), instance()) } //interface
     bind<CurrentWeatherViewModelFactory>() with provider { CurrentWeatherViewModelFactory(instance()) }
   }
 
